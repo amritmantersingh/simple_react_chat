@@ -1,0 +1,41 @@
+{
+  "name": "simple_chat",
+  "version": "1.0.0",
+  "description": "prototype of simple chat with nodejs, express, mongodb and react",
+  "main": "server.js",
+  "scripts": {
+    "dev": "nodemon server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/amritmantersingh/simple_react_chat.git"
+  },
+  "keywords": [
+    "node.js",
+    "express",
+    "react",
+    "mongodb",
+    "chat"
+  ],
+  "author": "amritmantersingh",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/amritmantersingh/simple_react_chat/issues"
+  },
+  "homepage": "https://github.com/amritmantersingh/simple_react_chat#readme",
+  "dependencies": {
+    "axios": "^0.17.1",
+    "body-parser": "^1.18.2",
+    "express": "^4.16.2",
+    "mongodb": "^2.2.34",
+    "react": "^16.2.0",
+    "react-dom": "^16.2.0",
+    "react-router-dom": "^4.2.2"
+  },
+  "devDependencies": {
+    "cors": "^2.8.4",
+    "express-logger": "0.0.3",
+    "nodemon": "^1.14.9",
+    "react-scripts": "^1.0.17"
+  }
+}
