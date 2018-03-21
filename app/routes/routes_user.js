@@ -12,6 +12,7 @@ module.exports = function(app, db) {
             } else {
                 (item.length && item[0].password) === user.password ?
                 res.send({
+                        name: user.username,
                         message: 'User '+ user.username + ' successfully authorized',
                         status: 1
                     }) :

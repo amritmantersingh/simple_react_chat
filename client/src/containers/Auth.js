@@ -7,6 +7,7 @@ import axios from 'axios';
 import { connect } from 'react-redux';
 import { UPDATE_FIELD_AUTH, LOGIN, SUBMIT_AUTH_FORM, LOADING_START, LOADING_FINISHED, LOGIN_ERROR} from '../constants/actionTypes';
 import agent from '../agent';
+import { sessionService } from 'redux-react-session';
 
 const BASE_URL = 'https://localhost:8000/';
 
@@ -26,12 +27,22 @@ const mapDispatchToProps = dispatch => ({
                     res => {
                         if (res.data.status === 1) {
                             dispatch({type: LOGIN});
+                            const { token } = res;
+                            sessionService.saveSession({ token })
+                                .then(() => {
+                                    sessionService.saveUser(res.data)
+                                }).catch(err => console.error(err));
+                            console.log(token);
                         } else if (res.data.status === 0) {
                             dispatch({type: LOGIN_ERROR, payload: res.data.message})
                         }
                         dispatch({type: LOADING_FINISHED});
                     }),
         })
+    },
+    onLogout: () => {
+        //sessionService.deleteSession();
+        //sessionService.deleteUser()
     }
 });
 
@@ -45,6 +56,9 @@ class Auth extends Component {
             ev.preventDefault();
             this.props.onSubmit(username, password);
         };
+        this.logOut = () => {
+            this.props.onLogout();
+        }
     }
 
     render () {
@@ -79,6 +93,12 @@ class Auth extends Component {
                     primary={true}
                     fullWidth={true}
                     onClick={this.submitForm(userName, userPassword)}
+                />
+                <RaisedButton
+                    label="LOGOUT"
+                    primary={true}
+                    fullWidth={true}
+                    onClick={this.logOut()}
                 />
                 <br/>
                 <br/>
