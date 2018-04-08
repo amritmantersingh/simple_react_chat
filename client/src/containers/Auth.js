@@ -8,6 +8,9 @@ import { connect } from 'react-redux';
 import { UPDATE_FIELD_AUTH, LOGIN, SUBMIT_AUTH_FORM, LOADING_START, LOADING_FINISHED, LOGIN_ERROR} from '../constants/actionTypes';
 import agent from '../agent';
 import { sessionService } from 'redux-react-session';
+import createHistory from 'history/createBrowserHistory'
+
+const history = createHistory();
 
 const BASE_URL = 'https://localhost:8000/';
 
@@ -31,6 +34,9 @@ const mapDispatchToProps = dispatch => ({
                             sessionService.saveSession({ token })
                                 .then(() => {
                                     sessionService.saveUser(res.data)
+                                })
+                                .then(() => {
+                                    history.replace('/');
                                 }).catch(err => console.error(err));
                             console.log(token);
                         } else if (res.data.status === 0) {
@@ -41,8 +47,8 @@ const mapDispatchToProps = dispatch => ({
         })
     },
     onLogout: () => {
-        //sessionService.deleteSession();
-        //sessionService.deleteUser()
+        sessionService.deleteSession();
+        sessionService.deleteUser()
     }
 });
 

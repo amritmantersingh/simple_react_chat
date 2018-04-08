@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Route, Router, Switch, BrowserRouter } from 'react-router-dom';
+import createHistory from 'history/createBrowserHistory'
 import { connect } from 'react-redux'
 import axios from 'axios';
 import Paper from 'material-ui/Paper';
@@ -8,7 +9,10 @@ import Auth from './containers/Auth';
 import Registration from './containers/Register';
 import CircularProgress from 'material-ui/CircularProgress';
 import { sessionService } from 'redux-react-session';
-import PrivateRoute from './containers/PrivateRoute'
+import PrivateRoute from './containers/PrivateRoute';
+import { syncHistoryWithStore, routerReducer } from 'react-router-redux';
+
+const history = createHistory();
 
 const CONTAINER_STYLES = {
     'width': '320px',
@@ -36,15 +40,17 @@ class MyAwesomeApp extends Component {
         super(props);
     }
 
-    componentWillMount () {
+    componentDidMount () {
+        sessionService.loadSession().then(currentSession => console.log(currentSession))
+            .catch(err => console.log(err));
 
     }
     render() {
 
-        console.log(this.props)
+        //console.log(this.props)
 
-        let authenticated = true // this.props.authenticated;
-        let checked = true //this.props.checked;
+        const authenticated = this.props.authenticated;
+        const checked = this.props.checked;
 
         if (!this.props.loading) {
             return (
@@ -52,7 +58,7 @@ class MyAwesomeApp extends Component {
                 <div className="wrapper">
                     <Paper zDepth={2} style={CONTAINER_STYLES}>
                         <Switch>
-
+                            <Router history={history}>
                                 { checked &&
                                 <div>
                                     <PrivateRoute exact path="/" component={Chat} authenticated={authenticated}/>
@@ -60,6 +66,7 @@ class MyAwesomeApp extends Component {
                                     <Route path='/register' component={ Registration }/>
                                 </div>
                                 }
+                            </Router>
 
                             {/*<PrivateRoute>*/}
                                 {/**/}
