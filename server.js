@@ -4,6 +4,8 @@ const bodyParser     = require('body-parser');
 const db             = require('./config/db');
 const app            = express();
 const logger         = require('express-logger');
+var jwt    = require('jsonwebtoken');
+
 var cors = require('cors')
 
 
@@ -20,3 +22,4 @@ MongoClient.connect(db.url, (err, database) => {
         console.log('We are live on ' + port);
     });
 });
+app.set('superSecret', db.secret);

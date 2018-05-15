@@ -25,7 +25,6 @@ PrivateRoute.propTypes = {
   component: func.isRequired,
   exact: bool,
   path: string.isRequired,
-  authenticated: bool.isRequired,
   location: object
 };
 

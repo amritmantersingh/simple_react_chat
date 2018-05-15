@@ -5,11 +5,14 @@ const API_ROOT = 'http://localhost:8000/api';
 const encode = encodeURIComponent;
 const responseBody = res => res.body;
 
+var token = window.localStorage.getItem('token');
+axios.defaults.headers.common['Authorization'] = token;
+
 const requests = {
     del: url =>
         axios.del(`${API_ROOT}${url}`).then(responseBody),
     get: url =>
-        axios.get(`${API_ROOT}${url}`).then(responseBody),
+        axios.get(`${API_ROOT}${url}`),
     put: (url, body) =>
         axios.put(`${API_ROOT}${url}`, body).then(responseBody),
     post: (url, body) =>
@@ -17,6 +20,8 @@ const requests = {
 };
 
 const Auth = {
+    check: () =>
+        requests.get('/'),
     current: () =>
         requests.get('/user'),
     login: (username, password) =>

@@ -1,4 +1,6 @@
 import {
+  CHECK_AUTH_TOKEN,
+  UNCHECK_AUTH_TOKEN,
   LOGIN,
   REGISTER,
   LOGIN_PAGE_UNLOADED,
@@ -16,6 +18,22 @@ const initialState = {
 
 export default (state = initialState, action) => {
   switch (action.type) {
+    case CHECK_AUTH_TOKEN:
+      return {
+          ...state,
+        session: {
+          authenticated: true,
+          user: action.payload
+        }
+      };
+    case UNCHECK_AUTH_TOKEN:
+      return {
+          ...state,
+          session: {
+            authenticated: false,
+            user: {}
+          }
+      };
     case SUBMIT_AUTH_FORM:
     case LOGIN_ERROR :
       return {

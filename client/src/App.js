@@ -11,6 +11,9 @@ import CircularProgress from 'material-ui/CircularProgress';
 import { sessionService } from 'redux-react-session';
 import PrivateRoute from './containers/PrivateRoute';
 import { syncHistoryWithStore, routerReducer } from 'react-router-redux';
+import agent from './agent';
+import { CHECK_AUTH_TOKEN, UNCHECK_AUTH_TOKEN } from './constants/actionTypes';
+
 
 const history = createHistory();
 
@@ -32,7 +35,23 @@ const LOADER_STYLES = {
     'margin': 'auto'
 };
 
-const mapStateToProps = state => ({ ...state.common, ...state.session });
+const mapStateToProps = state => ({ ...state.common });
+
+const mapDispatchToProps = dispatch => ({
+    onLoad: () =>
+    {
+        agent.Auth.check().then(
+        res => {
+            if (res.data.success) {
+                dispatch({type: CHECK_AUTH_TOKEN, payload: res.data.user});
+            } else {
+                window.localStorage.removeItem('token');
+                dispatch({type: UNCHECK_AUTH_TOKEN});
+            }
+
+        })
+    }
+});
 
 class MyAwesomeApp extends Component {
 
@@ -40,17 +59,13 @@ class MyAwesomeApp extends Component {
         super(props);
     }
 
-    componentDidMount () {
-        sessionService.loadSession().then(currentSession => console.log(currentSession))
-            .catch(err => console.log(err));
-
+    componentWillMount () {
+        this.props.onLoad();
     }
     render() {
 
-        //console.log(this.props)
-
         const authenticated = this.props.authenticated;
-        const checked = this.props.checked;
+        const checked = false //this.props.checked;
 
         if (!this.props.loading) {
             return (
@@ -59,13 +74,13 @@ class MyAwesomeApp extends Component {
                     <Paper zDepth={2} style={CONTAINER_STYLES}>
                         <Switch>
                             <Router history={history}>
-                                { checked &&
+
                                 <div>
                                     <PrivateRoute exact path="/" component={Chat} authenticated={authenticated}/>
                                     <Route path="/login" component={Auth}/>
                                     <Route path='/register' component={ Registration }/>
                                 </div>
-                                }
+
                             </Router>
 
                             {/*<PrivateRoute>*/}
@@ -96,4 +111,4 @@ class MyAwesomeApp extends Component {
     }
 }
 
-export default connect(mapStateToProps)(MyAwesomeApp);
+export default connect(mapStateToProps, mapDispatchToProps)(MyAwesomeApp);

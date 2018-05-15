@@ -5,9 +5,8 @@ import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
 import axios from 'axios';
 import { connect } from 'react-redux';
-import { UPDATE_FIELD_AUTH, LOGIN, SUBMIT_AUTH_FORM, LOADING_START, LOADING_FINISHED, LOGIN_ERROR} from '../constants/actionTypes';
+import { CHECK_AUTH_TOKEN, UPDATE_FIELD_AUTH, LOGIN, SUBMIT_AUTH_FORM, LOADING_START, LOADING_FINISHED, LOGIN_ERROR} from '../constants/actionTypes';
 import agent from '../agent';
-import { sessionService } from 'redux-react-session';
 import createHistory from 'history/createBrowserHistory'
 
 const history = createHistory();
@@ -30,15 +29,9 @@ const mapDispatchToProps = dispatch => ({
                     res => {
                         if (res.data.status === 1) {
                             dispatch({type: LOGIN});
-                            const { token } = res;
-                            sessionService.saveSession({ token })
-                                .then(() => {
-                                    sessionService.saveUser(res.data)
-                                })
-                                .then(() => {
-                                    history.replace('/');
-                                }).catch(err => console.error(err));
-                            console.log(token);
+                            const token = res.data.token;
+                            window.localStorage.setItem('token', token);
+                            dispatch({type: CHECK_AUTH_TOKEN, payload: {username: username}})
                         } else if (res.data.status === 0) {
                             dispatch({type: LOGIN_ERROR, payload: res.data.message})
                         }
@@ -47,8 +40,8 @@ const mapDispatchToProps = dispatch => ({
         })
     },
     onLogout: () => {
-        sessionService.deleteSession();
-        sessionService.deleteUser()
+        // sessionService.deleteSession();
+        // sessionService.deleteUser()
     }
 });
 
@@ -100,12 +93,12 @@ class Auth extends Component {
                     fullWidth={true}
                     onClick={this.submitForm(userName, userPassword)}
                 />
-                <RaisedButton
-                    label="LOGOUT"
-                    primary={true}
-                    fullWidth={true}
-                    onClick={this.logOut()}
-                />
+                {/*<RaisedButton*/}
+                    {/*label="LOGOUT"*/}
+                    {/*primary={true}*/}
+                    {/*fullWidth={true}*/}
+                    {/*onClick={this.logOut()}*/}
+                {/*/>*/}
                 <br/>
                 <br/>
                 <Link to="/register">
