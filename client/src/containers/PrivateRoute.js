@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Route, Redirect } from 'react-router-dom';
 
-const PrivateRoute = ({ component, exact = false, path, authenticated }) => (
+const PrivateRoute = ({ component, exact = false, path, authenticated, redirect }) => (
   <Route
     exact={exact}
     path={path}
@@ -11,7 +11,7 @@ const PrivateRoute = ({ component, exact = false, path, authenticated }) => (
           React.createElement(component, props)
       ) : (
         <Redirect to={{
-          pathname: '/login',
+          pathname: redirect,
           state: { from: props.location }
         }}/>
       )

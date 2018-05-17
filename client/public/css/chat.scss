@@ -1,0 +1,128 @@
+.chat__messages {
+  height: 400px;
+  overflow: auto;
+  margin: 0 -40px 0 -16px;
+  padding: 0 22px 0 16px;
+  background-image: url("https://raw.githubusercontent.com/telegramdesktop/tdesktop/dev/Telegram/Resources/art/bg_initial.jpg");
+  ul {
+    margin: 0;
+    margin-bottom: 8px;
+    padding: 16px 36px 0 0;
+    list-style: none;
+  }
+  .message {
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
+    position: relative;
+    z-index: 2;
+    margin-bottom: 8px;
+    font-size: 13px;
+    .message__container {
+      margin-left: 16px;
+      min-height: 32px;
+      min-width: 108px;
+      padding: 8px 16px 20px;
+      box-sizing: border-box;
+      max-width: 95%;
+      background-color: #fff;
+      border-radius: 6px;
+      box-shadow: 0 2px 1px 0 rgba(160,172,182,.5);
+      text-align: left;
+      position: relative;
+    }
+    .message__username {
+      font-weight: 700;
+      color: #2390fe;
+      display: block;
+      margin-bottom: 2px;
+    }
+    .message__text {
+      color: #222222;
+    }
+    .message__avatar {
+      flex-shrink:  0;
+      align-self: flex-end;
+    }
+    .message__date-time {
+      position: absolute;
+      color: #a1a1a1;
+      font-size: 12px;
+      font-weight: 500;
+      right: 8px;
+      bottom: 4px;
+    }
+    &.message_self {
+      flex-direction: row-reverse;
+      .message__avatar {
+        display: none !important;
+      }
+      .message__container {
+        margin-left: 0;
+        background-color: #effdde;
+        box-shadow: 0 2px 1px 0 rgba(93,196,82,.5);
+      }
+    }
+  }
+}
+.chat__input-area {
+  margin: 0 -16px -17px;
+  display: flex;
+  align-items: center;
+  padding: 16px;
+  .chat__text-field {
+    overflow: hidden;
+    padding-right: 5px;
+    flex-grow: 1;
+    &>div:nth-child(2) {
+      width: auto !important;
+      margin-right: -20px;
+    }
+  }
+  .chat__send-button {
+    margin-left: 16px;
+    flex-shrink: 0;
+  }
+}
+@media screen and (max-width: 420px) {
+  body {
+    margin: 0;
+    overflow: hidden;
+  }
+  .container {
+    width: 100vw !important;
+    min-height: 100vh !important;
+    margin: 0 !important;
+    display: flex;
+    align-items: center;
+  }
+  .chat__messages {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: auto;
+    padding: 65px 0px 95px 12px;
+    margin: 0;
+    ul {
+      padding-right: 20px;
+      padding-bottom: 20px;
+    }
+  }
+  .chat__header {
+    position: absolute !important;
+    top: 0;
+    margin: 0 !important;
+    left: 0;
+    right: 0 !important;
+  }
+  .chat__input-area {
+    position: absolute;
+    z-index: 200;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: 0;
+  }
+}

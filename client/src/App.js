@@ -4,7 +4,7 @@ import createHistory from 'history/createBrowserHistory'
 import { connect } from 'react-redux'
 import axios from 'axios';
 import Paper from 'material-ui/Paper';
-import Chat from './containers/Chat.js';
+import Chat from './containers/Chat';
 import Auth from './containers/Auth';
 import Registration from './containers/Register';
 import CircularProgress from 'material-ui/CircularProgress';
@@ -12,7 +12,7 @@ import { sessionService } from 'redux-react-session';
 import PrivateRoute from './containers/PrivateRoute';
 import { syncHistoryWithStore, routerReducer } from 'react-router-redux';
 import agent from './agent';
-import { CHECK_AUTH_TOKEN, UNCHECK_AUTH_TOKEN } from './constants/actionTypes';
+import {CHECK_AUTH_TOKEN, LOADING_START, LOADING_FINISHED, UNCHECK_AUTH_TOKEN} from './constants/actionTypes';
 
 
 const history = createHistory();
@@ -24,7 +24,8 @@ const CONTAINER_STYLES = {
     'textAlign': 'center',
     'minHeight': '375px',
     'boxSizing': 'border-box',
-    'position': 'relative'
+    'position': 'relative',
+    'overflow': 'hidden'
 };
 const LOADER_STYLES = {
     'position': 'absolute',
@@ -35,11 +36,12 @@ const LOADER_STYLES = {
     'margin': 'auto'
 };
 
-const mapStateToProps = state => ({ ...state.common });
+const mapStateToProps = state => ({ ...state.auth, ...state.common });
 
 const mapDispatchToProps = dispatch => ({
     onLoad: () =>
     {
+        dispatch({type: LOADING_START});
         agent.Auth.check().then(
         res => {
             if (res.data.success) {
@@ -48,8 +50,8 @@ const mapDispatchToProps = dispatch => ({
                 window.localStorage.removeItem('token');
                 dispatch({type: UNCHECK_AUTH_TOKEN});
             }
-
-        })
+            dispatch({type: LOADING_FINISHED});
+        });
     }
 });
 
@@ -64,34 +66,24 @@ class MyAwesomeApp extends Component {
     }
     render() {
 
-        const authenticated = this.props.authenticated;
-        const checked = false //this.props.checked;
+        const authenticated = this.props.session ? this.props.session.authenticated : false;
 
         if (!this.props.loading) {
             return (
 
                 <div className="wrapper">
-                    <Paper zDepth={2} style={CONTAINER_STYLES}>
+                    <Paper className="container" zDepth={2} style={CONTAINER_STYLES}>
                         <Switch>
                             <Router history={history}>
 
                                 <div>
-                                    <PrivateRoute exact path="/" component={Chat} authenticated={authenticated}/>
-                                    <Route path="/login" component={Auth}/>
+                                    <PrivateRoute exact path="/chat" component={Chat} authenticated={authenticated} redirect="/"/>
+                                    <PrivateRoute exact path="/" component={Auth} authenticated={!authenticated} redirect="/chat"/>
                                     <Route path='/register' component={ Registration }/>
                                 </div>
 
                             </Router>
 
-                            {/*<PrivateRoute>*/}
-                                {/**/}
-                            {/*</PrivateRoute>*/}
-                            {/*<Route exact path="/" component={ Chat } />*/}
-                            {/*<Route path='/login' component={ Auth }></Route>*/}
-
-                            {/*<Route path='/auth' render={(props) => (*/}
-                            {/*<Chat {...props} />*/}
-                            {/*)}/>*/}
                         </Switch>
                     </Paper>
                 </div>
@@ -100,7 +92,7 @@ class MyAwesomeApp extends Component {
         } else {
             return (
                 <div className="wrapper">
-                    <Paper zDepth={2} style={CONTAINER_STYLES}>
+                    <Paper className="container" zDepth={2} style={CONTAINER_STYLES}>
                         <CircularProgress size={80} thickness={5} style={LOADER_STYLES}/>
                     </Paper>
                 </div>

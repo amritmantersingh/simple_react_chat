@@ -22,4 +22,33 @@ MongoClient.connect(db.url, (err, database) => {
         console.log('We are live on ' + port);
     });
 });
+
 app.set('superSecret', db.secret);
+app.use(authCheck);
+
+function authCheck (req, res, next) {
+    let token = req.body.token || req.query.token || req.headers['x-access-token'] || req.get("authorization");
+    if ( req.path === '/api/users' || req.path === '/api/user/login') {
+        next()
+    } else if (token) {
+        console.log(res.path);
+        jwt.verify(token, app.get('superSecret'), function(err, decoded) {
+            if (err) {
+                return res.json({ success: false, message: 'Failed to authenticate token.' });
+            } else {
+                if (req.path === '/api/') {
+                    req.decoded = decoded;
+                    res.json({user: decoded, success: true, message: 'valid token!'})
+                } else {
+                    next()
+                }
+            }
+        });
+
+    } else {
+        return res.status(403).send({
+            success: false,
+            message: 'No token provided.'
+        });
+    }
+}

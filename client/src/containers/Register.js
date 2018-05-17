@@ -1,10 +1,13 @@
 import React, { Component } from 'react';
-import { Route, Switch, BrowserRouter, Link } from 'react-router-dom';
+import { Route, Switch, BrowserRouter, Link, Redirect } from 'react-router-dom';
 import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
 import agent from '../agent';
 import { connect } from 'react-redux';
-import { REGISTER, LOGIN, UPDATE_FIELD_REGISTER } from '../constants/actionTypes'
+import {
+    NEW_USER_REGISTERED, LOGIN, UPDATE_FIELD_REGISTER, UPDATE_FIELD_AUTH, REDIRECTED_TO_LOGIN_FORM,
+    LOADING_START, LOADING_FINISHED
+} from '../constants/actionTypes'
 
 const BASE_URL = 'https://localhost:8000/';
 
@@ -14,14 +17,23 @@ const mapDispatchToProps = dispatch => ({
     onChangeUserName: value =>
         dispatch({ type: UPDATE_FIELD_REGISTER, key: 'userName', value }),
     onChangeEmail: value =>
-        dispatch({ type: UPDATE_FIELD_REGISTER, key: 'email', value }),
+        dispatch({ type: UPDATE_FIELD_REGISTER, key: 'userEmail', value }),
     onChangePassword: value =>
-        dispatch({ type: UPDATE_FIELD_REGISTER, key: 'password', value }),
+        dispatch({ type: UPDATE_FIELD_REGISTER, key: 'userPassword', value }),
     onChangePasswordConfirm: value =>
-        dispatch({ type: UPDATE_FIELD_REGISTER, key: 'passwordConfirm', value }),
+        dispatch({ type: UPDATE_FIELD_REGISTER, key: 'userPasswordConfirm', value }),
     onSubmit: (username, email, password, passwordConfirm) => {
-        const payload = agent.Auth.register(username, email, password, passwordConfirm);
-        dispatch({ type: REGISTER, payload })
+        dispatch({ type: LOADING_START })
+        agent.Reg.register(username, email, password, passwordConfirm);
+        dispatch({ type: LOADING_FINISHED })
+        ).then(()=>{dispatch({ type: NEW_USER_REGISTERED })})
+    },
+    onChangeUser: value =>
+        dispatch({type: UPDATE_FIELD_AUTH, key: 'userName', value}),
+    onChangePass: value =>
+        dispatch({type: UPDATE_FIELD_AUTH, key: 'userPassword', value}),
+    onRedirect: () => {
+        dispatch({ type: REDIRECTED_TO_LOGIN_FORM })
     }
 });
 
@@ -32,14 +44,21 @@ class Register extends Component {
         this.changeUserName = ev => this.props.onChangeUserName(ev.target.value);
         this.changeEmail = ev => this.props.onChangeEmail(ev.target.value);
         this.changePassword = ev => this.props.onChangePassword(ev.target.value);
-        this.changePasswordConfirm = ev => this.props.changePasswordConfirm(ev.target.value);
+        this.changePasswordConfirm = ev => this.props.onChangePasswordConfirm(ev.target.value);
         this.submitForm = ev => {
+            console.log(this.props);
             ev.preventDefault();
-            this.props.onSubmit();
+            this.props.onSubmit( this.props.userName, this.props.userEmail, this.props.userPassword, this.props.userPasswordConfirm );
+            this.props.onChangeUser(this.props.userName);
+            this.props.onChangePass(this.props.userPassword);
+            this.props.onRedirect()
         };
     }
 
     render () {
+        if (this.props.redirect) {
+            <Redirect to='/'/>
+        }
         return (
             <div>
                 <h3>Sign up</h3>

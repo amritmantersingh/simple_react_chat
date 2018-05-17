@@ -5,7 +5,7 @@ const API_ROOT = 'http://localhost:8000/api';
 const encode = encodeURIComponent;
 const responseBody = res => res.body;
 
-var token = window.localStorage.getItem('token');
+const token = window.localStorage.getItem('token');
 axios.defaults.headers.common['Authorization'] = token;
 
 const requests = {
@@ -26,8 +26,6 @@ const Auth = {
         requests.get('/user'),
     login: (username, password) =>
         requests.post('/user/login', { username: username, password: password }),
-    register: (username, email, password) =>
-        requests.post('/users', { user: { username, email, password } }),
     save: user =>
         requests.put('/user', { user })
 };
@@ -39,12 +37,23 @@ const Reg = {
         requests.post('/users', {
             username: username,
             password: password,
-            password_confirm: passwordConfirm,
+            passwordConfirm: passwordConfirm,
             email: email
-        })
+        }),
 };
+
+const Chat = {
+    getMessages: () =>
+        requests.get('/messages/'),
+    sendMessage: (username, text) =>
+        requests.post('/messages', {
+            username: username,
+            text: text,
+        })
+}
 
 export default {
     Auth,
-    Reg
+    Reg,
+    Chat
 };
