@@ -28,7 +28,7 @@ app.use(authCheck);
 
 function authCheck (req, res, next) {
     let token = req.body.token || req.query.token || req.headers['x-access-token'] || req.get("authorization");
-    if ( req.path === '/api/users' || req.path === '/api/user/login') {
+    if ( req.path === '/api/users' || req.path === '/api/user/login' ) {
         next()
     } else if (token) {
         console.log(res.path);

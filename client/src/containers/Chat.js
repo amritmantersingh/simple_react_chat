@@ -19,12 +19,11 @@ const appBarStyles = {
     'width': 'auto'
 }
 
-const mapStateToProps = state => ({ ...state.chat, ...{ username: state.auth.session.user.username,
-autehnticated: state.auth.session.user.authenticated}});
+const mapStateToProps = state => ({ ...state.chat, ...{ username: state.auth.session.user.username, authenticated: state.auth.session.authenticated}});
 
 const mapDispatchToProps = dispatch => ({
-    getMessages: () => { agent.Chat.getMessages().then( res => {
-        dispatch({ type: LOAD_MESSAGES, payload: res.data })})},
+    getMessages: (query) => agent.Chat.getMessages(query).then( res => {
+        dispatch({ type: LOAD_MESSAGES, payload: res.data })}),
     onChangeMessageText: value =>
         dispatch({type: UPDATE_MESSAGE_FIELD, value}),
     onMessageSend: (username, text) =>
@@ -48,10 +47,12 @@ class Chat extends Component {
         this.logOut = () => this.props.onLogout();
     }
     componentDidMount () {
-        setInterval(function() { this.props.authenticated ? this.props.getMessages() : null; console.log(this.props)}.bind(this), 3000);
+        setInterval(function() { if (this.props.authenticated) {
+            this.props.getMessages(composeFetchMessagesQuery('after',this.props.lastRecievedMessageTs, 20))
+        }}.bind(this), 3000);
     }
     componentWillMount () {
-        this.props.getMessages();
+        this.props.getMessages(composeFetchMessagesQuery());
     }
     render () {
         return (
@@ -101,14 +102,20 @@ class MessagesList extends Component {
         }
 
         const messagesListItems = messages.map((message) =>
-            <li key={message._id} className={"message " + ( isSelf(message.username) ? "message_self" : "" ) }>
-                <Avatar className="message__avatar">AA</Avatar>
+        {
+            let nameSplited = message.username.split(' ');
+            let initials = nameSplited.length === 1 ? nameSplited[0].substr(0,2) : nameSplited.map((name) => name[0]).join('').substr(0,2);
+
+            return <li key={message._id} className={"message " + ( isSelf(message.username) ? "message_self" : "" ) }>
+                <Avatar className="message__avatar">{ initials }</Avatar>
                 <div className="message__container">
                     { !isSelf(message.username) ? <div className="message__username">{message.username}</div> : ''}
                     <div className="message__text">{message.text}</div>
                     <div className="message__date-time"> {moment.unix(message.dateTime).format('HH:mm DD.MM.YY') } </div>
                 </div>
             </li>
+        }
+
         );
 
         return (
@@ -154,6 +161,13 @@ class InputMessageArea extends Component {
             </Paper>
         )
     }
+}
+
+const composeFetchMessagesQuery = (q, ts, c) => {
+    const query = q ? ( q + '/' ) : 'before/';
+    const timestamp = ts ? ( ts + '/' ) : ( moment().unix() + '/' );
+    const count = c ? c : 40;
+    return ( query + timestamp + count )
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Chat);

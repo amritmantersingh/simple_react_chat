@@ -76,7 +76,7 @@ module.exports = function(app, db) {
     app.post('/api/users', (req, res) => {
 
         const user = req.body;
-        console.log(user);
+
         if ( !user.username.length || !user.password.length || !user.passwordConfirm.length || !user.email.length ) {
             res.send({'error':'All fields is required.'});
         } else if ( user.password && user.password !== user.passwordConfirm) {

@@ -1,24 +1,26 @@
 import {
     LOAD_MESSAGES,
     UPDATE_MESSAGE_FIELD,
-    MESSAGE_SENT
+    MESSAGE_SENT,
 } from '../constants/actionTypes';
 
 const initialState = {
-    messages: []
+    messages: [],
 };
-//
+
 export default (state = initialState, action) => {
 
     switch (action.type) {
         case LOAD_MESSAGES:
-            let seenKeys = Object.create(null);
+            let unique = Object.create(null);
 
             return {
                 ...state,
                 messages: [...state.messages, ...action.payload ].sort(function (a,b) {
                     return a.dateTime - b.dateTime
-                }).filter(obj => seenKeys[obj._id]? false : seenKeys[obj._id] = true)
+                }).filter(obj => unique[obj._id]? false : unique[obj._id] = true),
+                lastRecievedMessageTs: state.messages.length ? state.messages[ state.messages.length - 1 ].dateTime : null,
+                firstRecievedMessageTs: state.messages.length ? state.messages[0].dateTime : null
             };
         case UPDATE_MESSAGE_FIELD:
             return {

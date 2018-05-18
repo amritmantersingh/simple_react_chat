@@ -28,15 +28,24 @@ module.exports = function(app, db) {
             });
         });
 
-    app.get('/api/messages/', (req, res, next) => {
+    app.get('/api/messages/:query/:from/:count', (req, res) => {
 
-            const time = req.params.from;
+            const query = req.params.query === 'after' ? '$gt' : '$lt';
+            const temestamp = parseInt(req.params.from, 10);
+            const count = req.params.count;
 
-            db.collection('chat.messages').find().toArray((err, item) => {
+            const searchQuery = {};
+            searchQuery[query] = temestamp;
+
+            db.collection('chat.messages').find({'dateTime':searchQuery}).toArray((err, item) => {
                 if (err) {
                     res.send({'error':'An error has occurred'});
                 } else {
-                    res.send(item);
+                    let result = item.sort( ( a, b ) => {
+                        return a.dateTime - b.dateTime
+                    });
+                    result = query === '$lt' ? result.slice(Math.max(result.length - count, 1)) : result.slice(0, count)
+                    res.send(result);
                 }
             });
 

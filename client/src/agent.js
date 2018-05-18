@@ -43,8 +43,8 @@ const Reg = {
 };
 
 const Chat = {
-    getMessages: () =>
-        requests.get('/messages/'),
+    getMessages: (query) =>
+        requests.get('/messages/'+ ( query ? query : '' ) ),
     sendMessage: (username, text) =>
         requests.post('/messages', {
             username: username,
