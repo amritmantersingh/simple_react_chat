@@ -6,7 +6,7 @@ import agent from '../agent';
 import { connect } from 'react-redux';
 import {
     NEW_USER_REGISTERED, LOGIN, UPDATE_FIELD_REGISTER, UPDATE_FIELD_AUTH, REDIRECTED_TO_LOGIN_FORM,
-    LOADING_START, LOADING_FINISHED
+    LOADING_START, LOADING_FINISHED, UNCHECK_AUTH_TOKEN
 } from '../constants/actionTypes'
 
 const BASE_URL = 'https://localhost:8000/';
@@ -24,9 +24,14 @@ const mapDispatchToProps = dispatch => ({
         dispatch({ type: UPDATE_FIELD_REGISTER, key: 'userPasswordConfirm', value }),
     onSubmit: (username, email, password, passwordConfirm) => {
         dispatch({ type: LOADING_START })
-        agent.Reg.register(username, email, password, passwordConfirm);
-        dispatch({ type: LOADING_FINISHED })
-        ).then(()=>{dispatch({ type: NEW_USER_REGISTERED })})
+        agent.Reg.register(username, email, password, passwordConfirm).then(
+            function () {
+                dispatch({ type: LOADING_FINISHED });
+                dispatch({ type: NEW_USER_REGISTERED });
+                window.localStorage.removeItem('token');
+                dispatch({type: UNCHECK_AUTH_TOKEN});
+            }
+        )
     },
     onChangeUser: value =>
         dispatch({type: UPDATE_FIELD_AUTH, key: 'userName', value}),
@@ -54,10 +59,9 @@ class Register extends Component {
             this.props.onRedirect()
         };
     }
-
     render () {
         if (this.props.redirect) {
-            <Redirect to='/'/>
+            return <Redirect to='/'/>
         }
         return (
             <div>

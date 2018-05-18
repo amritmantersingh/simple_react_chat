@@ -31,6 +31,7 @@ const mapDispatchToProps = dispatch => ({
                             dispatch({type: LOGIN});
                             const token = res.data.token;
                             window.localStorage.setItem('token', token);
+                            axios.defaults.headers.common['Authorization'] = token;
                             dispatch({type: CHECK_AUTH_TOKEN, payload: {username: username}})
                         } else if (res.data.status === 0) {
                             dispatch({type: LOGIN_ERROR, payload: res.data.message})

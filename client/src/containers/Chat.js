@@ -19,7 +19,8 @@ const appBarStyles = {
     'width': 'auto'
 }
 
-const mapStateToProps = state => ({ ...state.chat, ...{ username: state.auth.session.user.username }});
+const mapStateToProps = state => ({ ...state.chat, ...{ username: state.auth.session.user.username,
+autehnticated: state.auth.session.user.authenticated}});
 
 const mapDispatchToProps = dispatch => ({
     getMessages: () => { agent.Chat.getMessages().then( res => {
@@ -32,7 +33,11 @@ const mapDispatchToProps = dispatch => ({
             dispatch({ type: LOAD_MESSAGES, payload: [res.data] });
 
         }),
-    onLogout: () => dispatch({ type: UNCHECK_AUTH_TOKEN })
+    onLogout: () => {
+        window.localStorage.removeItem('token');
+        axios.defaults.headers.common['Authorization'] = '';
+        dispatch({ type: UNCHECK_AUTH_TOKEN })
+    }
 })
 
 class Chat extends Component {
@@ -43,7 +48,7 @@ class Chat extends Component {
         this.logOut = () => this.props.onLogout();
     }
     componentDidMount () {
-        setInterval(function() { this.props.getMessages(); }.bind(this), 3000);
+        setInterval(function() { this.props.authenticated ? this.props.getMessages() : null; console.log(this.props)}.bind(this), 3000);
     }
     componentWillMount () {
         this.props.getMessages();

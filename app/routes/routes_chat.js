@@ -12,7 +12,6 @@ module.exports = function(app, db) {
 
     app.post('/api/messages', (req,res) => {
 
-        const auth = req.get("authorization");
         const message = {
             username: req.body.username,
             dateTime: moment().unix(),
