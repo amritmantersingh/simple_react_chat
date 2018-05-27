@@ -2,15 +2,22 @@ import {
     LOAD_MESSAGES,
     UPDATE_MESSAGE_FIELD,
     MESSAGE_SENT,
+    SCROLL_TOP
 } from '../constants/actionTypes';
 
 const initialState = {
     messages: [],
+    scrollTop: false
 };
 
 export default (state = initialState, action) => {
 
     switch (action.type) {
+        case SCROLL_TOP:
+            return {
+                ...state,
+                scrollTop: action.payload
+            };
         case LOAD_MESSAGES:
             let unique = Object.create(null);
 

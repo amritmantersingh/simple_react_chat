@@ -14,6 +14,7 @@ export const REDIRECTED_TO_LOGIN_FORM = 'REDIRECTED_TO_LOGIN_FORM';
 export const LOAD_MESSAGES = 'LOAD_MESSAGES';
 export const UPDATE_MESSAGE_FIELD = 'UPDATE_MESSAGE_FIELD';
 export const MESSAGE_SENT = 'MESSAGE_SENT';
+export const SCROLL_TOP = 'SCROLL_TOP';
 
 export const APP_LOAD = 'APP_LOAD';
 export const REDIRECT = 'REDIRECT';

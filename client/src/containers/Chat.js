@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Route, Switch, BrowserRouter } from 'react-router-dom';
-import { LOAD_MESSAGES, UNCHECK_AUTH_TOKEN, UPDATE_MESSAGE_FIELD, MESSAGE_SENT } from '../constants/actionTypes';
+import { LOAD_MESSAGES, UNCHECK_AUTH_TOKEN, UPDATE_MESSAGE_FIELD, MESSAGE_SENT, SCROLL_TOP } from '../constants/actionTypes';
 import AppBar from 'material-ui/AppBar';
 import Paper from 'material-ui/Paper';
 import TextField from 'material-ui/TextField';
@@ -36,6 +36,9 @@ const mapDispatchToProps = dispatch => ({
         window.localStorage.removeItem('token');
         axios.defaults.headers.common['Authorization'] = '';
         dispatch({ type: UNCHECK_AUTH_TOKEN })
+    },
+    onScroll: (scrolltop) => {
+        dispatch({type: SCROLL_TOP, payload: scrolltop})
     }
 })
 
@@ -58,7 +61,7 @@ class Chat extends Component {
         return (
             <div>
                 <TopBar onLogout={this.logOut} />
-                <MessagesList ref='messages' user={this.props.username} messages={this.props.messages}/>
+                <MessagesList scrollTop={this.props.scrollTop} onScroll={this.props.onScroll} ref='messages' user={this.props.username} messages={this.props.messages}/>
                 <InputMessageArea messageText={this.props.messageText} submitHandler={this.sendMessage} inputHandler={this.changeMessageText}/>
             </div>
         )
@@ -87,13 +90,21 @@ class TopBar extends Component {
 }
 class MessagesList extends Component {
 
+    constructor(props) {
+        super(props);
+        this.onScrollHandler = () =>  {
+            const scrollTop = this.refs.scroll.view.scrollTop;
+            this.props.scrollTop !== !scrollTop ?
+            this.props.onScroll(!scrollTop) : null;
+        }
+    }
+
     componentDidUpdate(prevProps, prevState, snapshot) {
         this.refs.messagesEnd.scrollIntoView({block: "end", behavior: "smooth"})
     }
     shouldComponentUpdate(nextProps, nextState) {
         return this.props.messages.length !== nextProps.messages.length
     }
-
     render () {
         const messages = this.props.messages ? this.props.messages : [];
         const user = this.props.user;
@@ -120,9 +131,19 @@ class MessagesList extends Component {
 
         return (
             <div className='chat__messages'>
-                <Scrollbars autoHide
-                            autoHideTimeout={1000}
-                            autoHideDuration={200}>
+                <Scrollbars
+                    ref="scroll"
+                    renderTrackHorizontal={({ style, ...props }) =>
+                        <div {...props} style={{ ...style, display: 'none' }}/>
+                    }
+                    onScroll={this.onScrollHandler}
+                    autoHide
+                    autoHideTimeout={1000}
+                    autoHideDuration={200}
+                >
+                    <div style={{ float:"left", clear: "both" }}
+                         ref='messagesStart'>
+                    </div>
                     <ul>
                         {messagesListItems}
                     </ul>
