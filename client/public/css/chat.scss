@@ -1,13 +1,60 @@
+@import url('https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,700,700i');
+body {
+  margin: 0;
+  overflow: hidden;
+  font-family: 'Open Sans', sans-serif;
+}
+.container {
+  width: 320px;
+  height: 520px;
+  padding: 16px;
+  text-align: center;
+  box-sizing: border-box;
+}
+.loader_main {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  margin: a;
+}
+.chat__header {
+  position: absolute;
+  top: 0;
+  margin: 0;
+  left: 0;
+  right: 0;
+}
 .chat__messages {
-  height: 400px;
-  overflow: auto;
-  margin: 0 -40px 0 -16px;
-  padding: 0 22px 0 16px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: auto;
+  padding: 65px 0px 88px 12px;
+  margin: 0;
   background-image: url("https://raw.githubusercontent.com/telegramdesktop/tdesktop/dev/Telegram/Resources/art/bg_initial.jpg");
+  .chat__loader {
+    transition: all 200ms;
+    overflow: hidden;
+    opacity: 1;
+    height: 48px;
+    padding-top: 8px;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    padding-right: 12px;
+    text-align: center;
+    &.hidden {
+      opacity: 0;
+      height: 0;
+    }
+  }
   ul {
     margin: 0;
-    margin-bottom: 8px;
-    padding: 16px 36px 0 0;
+    padding: 16px 20px 20px 0;
     list-style: none;
   }
   .message {
@@ -39,6 +86,7 @@
     }
     .message__text {
       color: #222222;
+      word-break: break-word;
     }
     .message__avatar {
       flex-shrink:  0;
@@ -65,12 +113,35 @@
       }
     }
   }
+  .chat__tobottom {
+    position: fixed !important;
+    right: 20px;
+    bottom: 120px;
+    z-index: 500;
+    opacity: 1;
+    transition: all 50ms;
+    transform: translateY(0);
+    padding: 0 !important;
+    &.hidden {
+      opacity: 0;
+      transform: translateY(40px);
+      pointer-events: none;
+    }
+    .material-icons {
+      color: #636363 !important;
+    }
+  }
 }
 .chat__input-area {
-  margin: 0 -16px -17px;
   display: flex;
   align-items: center;
   padding: 16px;
+  position: absolute;
+  z-index: 200;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: 0;
   .chat__text-field {
     overflow: hidden;
     padding-right: 5px;
@@ -86,44 +157,12 @@
   }
 }
 @media screen and (max-width: 420px) {
-  body {
-    margin: 0;
-    overflow: hidden;
-  }
   .container {
     width: 100vw !important;
     min-height: 100vh !important;
     margin: 0 !important;
     display: flex;
     align-items: center;
-  }
-  .chat__messages {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    height: auto;
-    padding: 65px 0px 95px 12px;
-    margin: 0;
-    ul {
-      padding-right: 20px;
-      padding-bottom: 20px;
-    }
-  }
-  .chat__header {
-    position: absolute !important;
-    top: 0;
-    margin: 0 !important;
-    left: 0;
-    right: 0 !important;
-  }
-  .chat__input-area {
-    position: absolute;
-    z-index: 200;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    margin: 0;
+    flex-direction: column;
   }
 }

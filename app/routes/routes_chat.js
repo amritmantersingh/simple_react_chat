@@ -31,11 +31,11 @@ module.exports = function(app, db) {
     app.get('/api/messages/:query/:from/:count', (req, res) => {
 
             const query = req.params.query === 'after' ? '$gt' : '$lt';
-            const temestamp = parseInt(req.params.from, 10);
+            const timestamp = parseInt(req.params.from, 10);
             const count = req.params.count;
 
             const searchQuery = {};
-            searchQuery[query] = temestamp;
+            searchQuery[query] = timestamp;
 
             db.collection('chat.messages').find({'dateTime':searchQuery}).toArray((err, item) => {
                 if (err) {

@@ -3,6 +3,7 @@ import { Route, Switch, BrowserRouter, Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
+import Paper from 'material-ui/Paper';
 import axios from 'axios';
 import { connect } from 'react-redux';
 import { CHECK_AUTH_TOKEN, UPDATE_FIELD_AUTH, LOGIN, SUBMIT_AUTH_FORM, LOADING_START, LOADING_FINISHED, LOGIN_ERROR} from '../constants/actionTypes';
@@ -62,7 +63,7 @@ class Auth extends Component {
         const userPassword = this.props.auth.userPassword;
         const loginError = typeof this.props.auth.loginError === 'string' ? this.props.auth.loginError : '';
         return (
-            <div>
+            <Paper className="container" zDepth={2}>
                 <h3>Sign in</h3>
                 <TextField
                     onChange={this.changeUserName}
@@ -98,7 +99,7 @@ class Auth extends Component {
                         fullWidth={true}
                     />
                 </Link>
-            </div>
+            </Paper>
         )
     }
 }

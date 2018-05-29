@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Route, Switch, BrowserRouter, Link, Redirect } from 'react-router-dom';
 import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
+import Paper from 'material-ui/Paper';
 import agent from '../agent';
 import { connect } from 'react-redux';
 import {
@@ -64,7 +65,7 @@ class Register extends Component {
             return <Redirect to='/'/>
         }
         return (
-            <div>
+            <Paper className="container" zDepth={2}>
                 <h3>Sign up</h3>
                 <TextField
                     onChange={this.changeUserName}
@@ -120,7 +121,7 @@ class Register extends Component {
                         fullWidth={true}
                     />
                 </Link>
-            </div>
+            </Paper>
         )
     }
 }

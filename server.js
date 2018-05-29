@@ -31,7 +31,6 @@ function authCheck (req, res, next) {
     if ( req.path === '/api/users' || req.path === '/api/user/login' ) {
         next()
     } else if (token) {
-        console.log(res.path);
         jwt.verify(token, app.get('superSecret'), function(err, decoded) {
             if (err) {
                 return res.json({ success: false, message: 'Failed to authenticate token.' });

@@ -3,11 +3,11 @@ import { Route, Router, Switch, BrowserRouter } from 'react-router-dom';
 import createHistory from 'history/createBrowserHistory'
 import { connect } from 'react-redux'
 import axios from 'axios';
-import Paper from 'material-ui/Paper';
 import Chat from './containers/Chat';
 import Auth from './containers/Auth';
 import Registration from './containers/Register';
 import CircularProgress from 'material-ui/CircularProgress';
+import Paper from 'material-ui/Paper';
 import { sessionService } from 'redux-react-session';
 import PrivateRoute from './containers/PrivateRoute';
 import { syncHistoryWithStore, routerReducer } from 'react-router-redux';
@@ -18,8 +18,8 @@ import {CHECK_AUTH_TOKEN, LOADING_START, LOADING_FINISHED, UNCHECK_AUTH_TOKEN} f
 const history = createHistory();
 
 const CONTAINER_STYLES = {
-    'width': '320px',
-    'margin': '200px auto',
+    'width': '100vw',
+    'height': '100vh',
     'padding': '16px',
     'textAlign': 'center',
     'minHeight': '375px',
@@ -72,28 +72,25 @@ class MyAwesomeApp extends Component {
             return (
 
                 <div className="wrapper">
-                    <Paper className="container" zDepth={2} style={CONTAINER_STYLES}>
-                        <Switch>
-                            <Router history={history}>
+                    <Switch>
+                        <Router history={history}>
 
-                                <div>
-                                    <PrivateRoute exact path="/chat" component={Chat} authenticated={authenticated} redirect="/"/>
-                                    <PrivateRoute exact path="/" component={Auth} authenticated={!authenticated} redirect="/chat"/>
-                                    <Route path='/register' component={ Registration }/>
-                                </div>
+                            <div>
+                                <PrivateRoute exact path="/chat" component={Chat} authenticated={authenticated} redirect="/"/>
+                                <PrivateRoute exact path="/" component={Auth} authenticated={!authenticated} redirect="/chat"/>
+                                <Route path='/register' component={ Registration }/>
+                            </div>
 
-                            </Router>
-
-                        </Switch>
-                    </Paper>
+                        </Router>
+                    </Switch>
                 </div>
 
             );
         } else {
             return (
                 <div className="wrapper">
-                    <Paper className="container" zDepth={2} style={CONTAINER_STYLES}>
-                        <CircularProgress size={80} thickness={5} style={LOADER_STYLES}/>
+                    <Paper className="container" zDepth={2} >
+                        <CircularProgress size={80} thickness={5} className="loader_main"/>
                     </Paper>
                 </div>
             )
