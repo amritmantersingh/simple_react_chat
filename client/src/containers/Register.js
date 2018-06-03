@@ -52,13 +52,18 @@ class Register extends Component {
         this.changePassword = ev => this.props.onChangePassword(ev.target.value);
         this.changePasswordConfirm = ev => this.props.onChangePasswordConfirm(ev.target.value);
         this.submitForm = ev => {
-            console.log(this.props);
             ev.preventDefault();
             this.props.onSubmit( this.props.userName, this.props.userEmail, this.props.userPassword, this.props.userPasswordConfirm );
             this.props.onChangeUser(this.props.userName);
             this.props.onChangePass(this.props.userPassword);
             this.props.onRedirect()
         };
+    }
+    handleKeyPress = (event) => {
+        if(event.key == 'Enter'){
+            event.preventDefault();
+            this.submitForm();
+        }
     }
     render () {
         if (this.props.redirect) {
@@ -74,6 +79,7 @@ class Register extends Component {
                     type="text"
                     fullWidth={true}
                     floatingLabelText="USERNAME"
+                    onKeyPress={this.handleKeyPress}
                 />
                 <TextField
                     onChange={this.changeEmail}
@@ -82,6 +88,7 @@ class Register extends Component {
                     type="text"
                     floatingLabelText="EMAIL"
                     fullWidth={true}
+                    onKeyPress={this.handleKeyPress}
                 />
                 <TextField
                     onChange={this.changePassword}
@@ -90,6 +97,7 @@ class Register extends Component {
                     type="password"
                     floatingLabelText="PASSWORD"
                     fullWidth={true}
+                    onKeyPress={this.handleKeyPress}
                 />
                 <TextField
                     onChange={this.changePasswordConfirm}
@@ -98,6 +106,7 @@ class Register extends Component {
                     type="password"
                     floatingLabelText="CONFIRM PASSWORD"
                     fullWidth={true}
+                    onKeyPress={this.handleKeyPress}
                 />
                 <br/>
                 <br/>
@@ -111,10 +120,6 @@ class Register extends Component {
                 <br/>
                 <Link
                     to="/"
-                    style={{
-                        "display": "block",
-                        "height": "100%"
-                    }}
                 >
                     <RaisedButton
                         label="SIGN IN"
@@ -127,112 +132,3 @@ class Register extends Component {
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Register);
-
-// class SignUpForm extends Component {
-//
-//     constructor(props) {
-//         super(props);
-//         this.state = {
-//             user: {
-//                 userName: '',
-//                 userPassword: '',
-//                 userPasswordConfirm: '',
-//                 userEmail: ''
-//             }
-//         }
-//     }
-//
-//     handleInputChange = (event) => {
-//         const target = event.target;
-//         const value = target.type === 'checkbox' ? target.checked : target.value;
-//         const name = target.name;
-//         this.setState({
-//             user: {
-//                 ...this.state.user,
-//                 [name]: value
-//             }
-//         });
-//     };
-//     submitForm = () => {
-//
-//         let user = this.state.user;
-//
-//         axios.get('http://localhost:8000/api/usercheck/'+user.userName)
-//             .then((res)=>{
-//                 let data = res.data;
-//                 if (typeof data !== 'undefined' && data.length === 0 && Array.isArray(data)) {
-//                     return true;
-//                 } else {
-//                     alert('Sorry, please choose another name');
-//                     return false;
-//                 }
-//             }).then((res) => {
-//             res ? (() => {
-//                     if (user.userPassword && user.userPassword === user.userPasswordConfirm) {
-//                         axios.post('http://localhost:8000/api/users', {
-//                             username: user.userName,
-//                             password: user.userPassword,
-//                             password_confirm: user.userPasswordConfirm,
-//                             email: user.userEmail
-//                         }, {headers: {"Content-Type": "application/json"}})
-//                             .then(function (response) {
-//                                 console.log(response);
-//                             })
-//                             .catch(function (error) {
-//                                 console.log(error);
-//                             });
-//                     } else {
-//                         alert('Retype your password confirm')
-//                     }
-//                 }
-//             )() : null;
-//         });
-//
-//     };
-//
-//     render () {
-//
-//         return (
-//
-//         )
-//     }
-//
-// }
-//
-// class SignInForm extends Component {
-//
-//     constructor(props) {
-//         super(props);
-//         this.state = {
-//             user: {
-//                 userName: '',
-//                 userPassword: ''
-//             }
-//         }
-//     }
-//
-//     handleInputChange = (event) => {
-//         const target = event.target;
-//         const value = target.type === 'checkbox' ? target.checked : target.value;
-//         const name = target.name;
-//
-//         this.setState({
-//             user: {
-//                 [name]: value
-//             }
-//         });
-//     };
-//     submitForm = () => {
-//
-//     };
-//
-//     render () {
-//         return (
-//             <div>
-//
-//             </div>
-//
-//         )
-//     }
-//
-// }

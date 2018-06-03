@@ -49,12 +49,13 @@ class Auth extends Component {
         super(props);
         this.changeUserName = ev => this.props.onChangeUsername(ev.target.value);
         this.changePassword = ev => this.props.onChangePassword(ev.target.value);
-        this.submitForm = (username, password) => ev => {
-            ev.preventDefault();
-            this.props.onSubmit(username, password);
-        };
-        this.logOut = () => {
-            this.props.onLogout();
+        this.submitForm = ev => this.props.onSubmit(this.props.auth.userName, this.props.auth.userPassword);
+        this.logOut = () => this.props.onLogout();
+    }
+    handleKeyPress = (event) => {
+        if(event && event.key == 'Enter'){
+            event.preventDefault();
+            this.submitForm();
         }
     }
 
@@ -73,6 +74,7 @@ class Auth extends Component {
                     fullWidth={true}
                     floatingLabelText="USERNAME"
                     errorText={loginError.length ? ' ' : ''}
+                    onKeyPress={this.handleKeyPress}
                 />
                 <TextField
                     onChange={this.changePassword}
@@ -82,6 +84,7 @@ class Auth extends Component {
                     floatingLabelText="PASSWORD"
                     fullWidth={true}
                     errorText={loginError}
+                    onKeyPress={this.handleKeyPress}
                 />
                 <br/>
                 <br/>
@@ -89,7 +92,7 @@ class Auth extends Component {
                     label="SIGN IN"
                     primary={true}
                     fullWidth={true}
-                    onClick={this.submitForm(userName, userPassword)}
+                    onClick={this.submitForm}
                 />
                 <br/>
                 <br/>
