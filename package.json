@@ -8,7 +8,8 @@
     "all": "concurrently \"node server.js\" \"cd client && npm start\"",
     "dev": "nodemon server.js",
     "babel-node": "babel-node --presets=env --plugins syntax-object-rest-spread",
-    "server": "nodemon --exec npm run babel-node -- ./server.js"
+    "server": "nodemon --exec npm run babel-node -- ./server.js",
+    "prod": "concurrently \"node server.js\" \"cd client && serve -s build\""
   },
   "repository": {
     "type": "git",
@@ -44,6 +45,7 @@
     "babel-plugin-syntax-object-rest-spread": "^6.13.0",
     "babel-preset-env": "^1.7.0",
     "babel-preset-latest": "^6.24.1",
+    "compression": "^1.7.2",
     "concurrently": "^3.5.1",
     "cors": "^2.8.4",
     "express-logger": "0.0.3",

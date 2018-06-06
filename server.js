@@ -6,7 +6,8 @@ const bodyParser     = require('body-parser');
 const db             = require('./config/db');
 const app            = express();
 const logger         = require('express-logger');
-const cors = require('cors');
+const cors           = require('cors');
+const compression    = require('compression');
 
 const server = http.createServer(app);
 const io = socketIO(server);
@@ -18,6 +19,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors());
 app.use(logger({path: "./log.txt"}));
+app.use(compression());
 
 MongoClient.connect(db.url, (err, database) => {
     if (err) return console.log(err);
