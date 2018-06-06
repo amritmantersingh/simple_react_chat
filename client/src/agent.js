@@ -1,6 +1,7 @@
 import axios from 'axios';
 
-const API_ROOT = 'http://localhost:8000/api';
+const env = process.env.NODE_ENV;
+const API_ROOT = env === 'production' ? 'http://31.31.201.7:8000/api' : 'http://localhost:8000/api';
 
 const encode = encodeURIComponent;
 const responseBody = res => res.body;

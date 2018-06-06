@@ -1,8 +1,11 @@
 import socketIOClient from 'socket.io-client';
 
+const env = process.env.NODE_ENV;
+const API_URL = env === 'production' ? 'http://31.31.201.7:8000/' : 'http://localhost:8000/';
+
 export default function (token) {
 
-    const socket = socketIOClient.connect('http://localhost:8000', {query: 'auth_token=' + token})
+    const socket = socketIOClient.connect(API_URL, {query: 'auth_token=' + token})
 
     socket.on('error', function (err) {
         console.log('received socket error:');
