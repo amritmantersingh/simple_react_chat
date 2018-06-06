@@ -1,12 +1,16 @@
 import axios from 'axios';
 
-const API_ROOT = 'http://localhost:8000/api';//'http://192.168.1.70:8000/api';
+const API_ROOT = 'http://localhost:8000/api';
 
 const encode = encodeURIComponent;
 const responseBody = res => res.body;
 
 const token = window.localStorage.getItem('token');
-axios.defaults.headers.common['Authorization'] = token;
+if ( token && token.length ) {
+    axios.defaults.headers.common['Authorization'] = token;
+} else {
+    delete axios.defaults.headers.common.Authorization;
+}
 
 const requests = {
     del: url =>
@@ -20,8 +24,8 @@ const requests = {
 };
 
 const Auth = {
-    check: () =>
-        requests.get('/'),
+    check: (done) =>
+        requests.get('/').then( res => done( res ) ),
     current: () =>
         requests.get('/user'),
     login: (username, password) =>
@@ -33,13 +37,13 @@ const Auth = {
 const Reg = {
     checkName: (username) =>
         requests.get('/usercheck/' + username ),
-    register: (username, email, password, passwordConfirm) =>
+    register: (username, email, password, passwordConfirm, done) =>
         requests.post('/users', {
             username: username,
             password: password,
             passwordConfirm: passwordConfirm,
             email: email
-        }),
+        }).then( res => done(res.data) ),
 };
 
 const Chat = {

@@ -1,21 +1,23 @@
-import React, { Component } from 'react';
+import React, { Component, PureComponent } from 'react';
 import AppBar from 'material-ui/AppBar';
 import IconButton from 'material-ui/IconButton';
 
-class TopBar extends Component {
+class TopBar extends PureComponent {
     render () {
         return (
             <div>
                 <AppBar
                     className="chat__header"
-                    title="Chat 1.0.1"
-                    iconElementRight={<IconButton
-                        onClick={this.props.onLogout}
-                        tooltip="Logout"
-                        iconClassName="material-icons"
-                    >
-                        power_settings_new
-                    </IconButton>}
+                    title="TURBOCHAT 9001"
+                    iconElementRight={
+                        <IconButton
+                            onClick={this.props.onLogout}
+                            tooltip="Logout"
+                            iconClassName="material-icons"
+                        >
+                            power_settings_new
+                        </IconButton>
+                    }
                 />
             </div>
         )

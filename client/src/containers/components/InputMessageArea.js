@@ -1,15 +1,14 @@
-import React, { Component } from 'react';
+import React, { Component, PureComponent } from 'react';
 import Paper from 'material-ui/Paper';
 import TextField from 'material-ui/TextField';
 import IconButton from 'material-ui/IconButton';
-import FontIcon from 'material-ui/FontIcon';
 
-class InputMessageArea extends Component {
+class InputMessageArea extends PureComponent {
     constructor(props) {
         super(props);
         this.submitHandler = () => {
             if ( !this.props.messageText ) { return false }
-            this.props.submitHandler(this.props.messageText);
+            this.props.submitHandler( this.props.messageText );
         }
     }
     handleKeyPress = (event) => {

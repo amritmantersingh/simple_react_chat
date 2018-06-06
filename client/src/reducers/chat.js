@@ -52,9 +52,7 @@ export default (state = initialState, action) => {
             return {
                 ...state,
                 scroll: {
-                    scrollStatus: action.payload[0],
-                    scrollTop: action.payload[1],
-                    scrollBottom: action.payload[2]
+                    scrollBottom: action.payload
                 }
             };
         case LOAD_MESSAGES:

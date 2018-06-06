@@ -1,12 +1,13 @@
 import {
-  UPDATE_FIELD_REGISTER, NEW_USER_REGISTERED, REDIRECTED_TO_LOGIN_FORM
+  UPDATE_FIELD_REGISTER, NEW_USER_REGISTERED, REDIRECTED_TO_LOGIN_FORM, UPDATE_REGISTRATION_ERRORS
 } from '../constants/actionTypes';
 
 const initialState = {
-    userName: '',
-    userEmail: '',
-    userPassword: '',
-    userPasswordConfirm: '',
+  userName: '',
+  userEmail: '',
+  userPassword: '',
+  userPasswordConfirm: '',
+  errors: {}
 };
 
 export default (state = initialState, action) => {
@@ -26,6 +27,8 @@ export default (state = initialState, action) => {
     }
     case UPDATE_FIELD_REGISTER:
       return { ...state, [action.key]: action.value };
+    case UPDATE_REGISTRATION_ERRORS:
+      return { ...state, errors: action.payload};
     default:
       return state;
   }

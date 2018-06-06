@@ -16,7 +16,6 @@ import {
 } from '../constants/actionTypes';
 import { connect } from 'react-redux';
 import axios from 'axios';
-import agent from '../agent';
 import giphy from '../giphy'
 import socket from '../socket';
 
@@ -28,6 +27,7 @@ import GiphySelect from './components/GiphySelect'
 const mapStateToProps = state => ({ ...state.chat, ...{ username: state.auth.session.user.username, authenticated: state.auth.session.authenticated}});
 
 const mapDispatchToProps = (dispatch) => ({
+
     onStartLoadingMessages: () => { dispatch({type: START_LOADING_MESSAGES}) },
     onMessagesLoaded: () => { dispatch({type: FINISH_LOADING_MESSAGES}) },
     onGetMessages: (messages) => dispatch({ type: LOAD_MESSAGES, payload: messages }),
@@ -39,8 +39,8 @@ const mapDispatchToProps = (dispatch) => ({
         axios.defaults.headers.common['Authorization'] = '';
         dispatch({ type: UNCHECK_AUTH_TOKEN })
     },
-    onScroll: (isScrolling, scrollTop, scrollBottom) => {
-        dispatch({type: SCROLL_MESSAGES, payload: [ isScrolling, scrollTop, scrollBottom ]})
+    onScroll: (scrollBottom) => {
+        dispatch({type: SCROLL_MESSAGES, payload: scrollBottom })
     },
     onReadMessages: () => {
         dispatch({type: RESET_UNREAD_MESSAGES_COUNTER})
@@ -58,12 +58,12 @@ const mapDispatchToProps = (dispatch) => ({
     onLoadMoreGiphys: ( query, offset ) => {
         giphy.search(query, offset, (res) => dispatch({type: LOAD_MORE_GIPHYS , payload: res }))
     }
-})
+
+});
 
 class Chat extends Component {
     constructor(props) {
         super(props);
-
         this.token = window.localStorage.getItem('token');
         this.client = socket(this.token);
         this.changeMessageText = ev => this.props.onChangeMessageText(ev.target.value);
@@ -80,12 +80,6 @@ class Chat extends Component {
         });
         this.getMessages(true);
     }
-    componentWillMount () {
-        this.token = window.localStorage.getItem('token');
-    }
-    componentWillReceiveProps (nextProps) {
-        //nextProps.scrollTop === true ?  this.props.getMessages(composeFetchMessagesQuery(false, this.props.firstRecievedMessageTs, 20)) : null;
-    }
     getMessages = (isBefore, ts, count) => {
         this.client.getMessages({
             isBefore: isBefore,
@@ -95,7 +89,7 @@ class Chat extends Component {
     }
     sendMessage = ( msg ) => {
         const message = {
-            username: this.props.username ,
+            username: this.props.username,
             text: msg
         }
         this.client.message(message);

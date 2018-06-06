@@ -4,7 +4,11 @@
   "description": "prototype of simple chat with nodejs, express, mongodb and react",
   "main": "server.js",
   "scripts": {
-    "dev": "nodemon server.js"
+    "start": "concurrently \"nodemon --exec npm run babel-node -- server.js\" \"cd client && npm start\"",
+    "all": "concurrently \"node server.js\" \"cd client && npm start\"",
+    "dev": "nodemon server.js",
+    "babel-node": "babel-node --presets=env --plugins syntax-object-rest-spread",
+    "server": "nodemon --exec npm run babel-node -- ./server.js"
   },
   "repository": {
     "type": "git",
@@ -36,11 +40,22 @@
     "socket.io": "^2.1.1"
   },
   "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-plugin-syntax-object-rest-spread": "^6.13.0",
+    "babel-preset-env": "^1.7.0",
+    "babel-preset-latest": "^6.24.1",
+    "concurrently": "^3.5.1",
     "cors": "^2.8.4",
     "express-logger": "0.0.3",
     "moment": "^2.22.1",
     "nodemon": "^1.14.9",
     "react-scripts": "^1.0.17",
-    "socketio-jwt-auth": "0.0.6"
+    "socketio-jwt-auth": "0.0.6",
+    "validator": "^10.2.0"
+  },
+  "babel": {
+    "presets": [
+      "env"
+    ]
   }
 }

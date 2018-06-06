@@ -13,7 +13,6 @@ const giphy = {
         delete axios.defaults.headers.common.Authorization;
         axios.get( (API_ROOT +'/search?api_key='+ API_KEY + '&q=' + query + '&limit=19&offset=' + offset )).then( res => done(res.data));
     }
-
 }
 
 export default giphy;

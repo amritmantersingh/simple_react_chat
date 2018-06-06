@@ -1,18 +1,15 @@
-import React, { Component } from 'react';
+import React, { Component, PureComponent } from 'react';
 import Dialog from 'material-ui/Dialog';
-import Paper from 'material-ui/Paper';
 import TextField from 'material-ui/TextField';
 import IconButton from 'material-ui/IconButton';
-import FontIcon from 'material-ui/FontIcon';
 import {GridList, GridTile} from 'material-ui/GridList';
 import { Scrollbars } from 'react-custom-scrollbars';
 
-class GiphySelect extends Component {
+class GiphySelect extends PureComponent {
     constructor(props) {
         super(props);
-        this.sendGif = (link) => {
-            const gif = ['img', link];
-            console.log(link)
+        this.sendGif = ( link, height ) => {
+            const gif = ['img', link, height];
             this.props.sendGif(gif);
             this.props.onRequestClose();
         };
@@ -22,6 +19,7 @@ class GiphySelect extends Component {
             <Dialog
                 title="GIPHY"
                 contentStyle={{width: '96vw', maxWidth: '700px', maxHeight: '80vh'}}
+                contentClassName={'chat__modal'}
                 actions={[
                     <IconButton
                         children={'close'}
@@ -37,7 +35,6 @@ class GiphySelect extends Component {
                     fullWidth={true}
                     hintText="Search GIPHY"
                     value={this.props.giphy.searchQuery}
-                    //defaultValue={this.props.giphy.searchQuery}
                     onChange={this.props.inputHandler}
                 />
                 { this.props.giphy.searchQuery.length ?
@@ -46,6 +43,7 @@ class GiphySelect extends Component {
                         isLoading={this.props.giphy.isSearching}
                         offset={this.props.giphy.offset}
                         query={this.props.giphy.searchQuery}
+                        //gipfysList={this.props.giphy.giphysList}
                     >
                         <GridList
                             style={{paddingRight: 12}}
@@ -55,7 +53,7 @@ class GiphySelect extends Component {
                                     key={gif.id}
                                     title={gif.title}
                                     style={{cursor: "pointer"}}
-                                    onClick={() => this.sendGif(gif.images.downsized.url)}
+                                    onClick={ () => this.sendGif( gif.images.fixed_height_downsampled.url, gif.images.fixed_height_downsampled.height ) }
                                 >
                                     <img src={gif.images.preview_gif.url} />
                                 </GridTile>
@@ -74,7 +72,7 @@ class GiphySelect extends Component {
     }
 }
 
-class InfinityScroller extends Component {
+class InfinityScroller extends PureComponent {
     constructor(props) {
         super(props);
         this.handleUpdate = this.handleUpdate.bind(this);
@@ -82,20 +80,19 @@ class InfinityScroller extends Component {
         this.onLoadMore = this.props.onLoadMore.bind(this);
     }
     handleAboutToReachBottom = () => {
-        console.log(this.props.isLoading)
         !this.props.isLoading ?
         this.props.onLoadMore( this.props.query, ( this.props.offset + 20 ) ) : null;
     }
     handleUpdate(values) {
         const { scrollTop, scrollHeight, clientHeight } = values;
-        const pad = 100; // 100px of the bottom
-        // t will be greater than 1 if we are about to reach the bottom
+        const pad = 150;
         const t = ((scrollTop + pad) / (scrollHeight - clientHeight));
-        if (t > 1) this.handleAboutToReachBottom();
+        if ( t > 1 && !!clientHeight ) this.handleAboutToReachBottom();
     }
     render() {
         return (
             <Scrollbars
+                className="giphy__scroll-container"
                 onUpdate={this.handleUpdate}
                 autoHide
                 autoHideTimeout={1000}

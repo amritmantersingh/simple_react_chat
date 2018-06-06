@@ -1,12 +1,11 @@
 import React, { Component } from 'react';
-import { Route, Router, Switch, BrowserRouter } from 'react-router-dom';
+import { Route, Router, Switch } from 'react-router-dom';
 import createHistory from 'history/createBrowserHistory'
 import { connect } from 'react-redux'
 import Chat from './containers/Chat';
 import Auth from './containers/Auth';
 import Registration from './containers/Register';
 import CircularProgress from 'material-ui/CircularProgress';
-import Paper from 'material-ui/Paper';
 import PrivateRoute from './containers/PrivateRoute';
 import agent from './agent';
 import {
@@ -21,8 +20,7 @@ const mapDispatchToProps = dispatch => ({
     onLoad: () =>
     {
         dispatch({type: LOADING_START});
-        agent.Auth.check().then(
-        res => {
+        agent.Auth.check(res => {
             if (res.data.success) {
                 dispatch({type: CHECK_AUTH_TOKEN, payload: res.data.user});
             } else {
@@ -39,7 +37,6 @@ class MyAwesomeApp extends Component {
     constructor(props) {
         super(props);
     }
-
     componentWillMount () {
         this.props.onLoad();
     }
@@ -49,33 +46,25 @@ class MyAwesomeApp extends Component {
 
         if (!this.props.loading) {
             return (
-
                 <div className="wrapper">
                     <Switch>
                         <Router history={history}>
-
                             <div>
                                 <PrivateRoute exact path="/chat" component={Chat} authenticated={authenticated} redirect="/"/>
                                 <PrivateRoute exact path="/" component={Auth} authenticated={!authenticated} redirect="/chat"/>
                                 <Route path='/register' component={ Registration }/>
                             </div>
-
                         </Router>
                     </Switch>
                 </div>
-
             );
         } else {
             return (
                 <div className="wrapper">
-                    <Paper className="container" zDepth={2} >
-                        <CircularProgress size={80} thickness={5} className="loader_main"/>
-                    </Paper>
+                    <CircularProgress size={80} thickness={5} className="loader_main"/>
                 </div>
             )
-
         }
-
     }
 }
 

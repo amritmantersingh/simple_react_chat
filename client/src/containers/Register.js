@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Route, Switch, BrowserRouter, Link, Redirect } from 'react-router-dom';
+import { Link, Redirect } from 'react-router-dom';
 import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
 import Paper from 'material-ui/Paper';
@@ -7,10 +7,8 @@ import agent from '../agent';
 import { connect } from 'react-redux';
 import {
     NEW_USER_REGISTERED, LOGIN, UPDATE_FIELD_REGISTER, UPDATE_FIELD_AUTH, REDIRECTED_TO_LOGIN_FORM,
-    LOADING_START, LOADING_FINISHED, UNCHECK_AUTH_TOKEN
+    LOADING_START, LOADING_FINISHED, UNCHECK_AUTH_TOKEN, UPDATE_REGISTRATION_ERRORS
 } from '../constants/actionTypes'
-
-const BASE_URL = 'https://localhost:8000/';
 
 const mapStateToProps = state => ({ ...state.register });
 
@@ -24,15 +22,18 @@ const mapDispatchToProps = dispatch => ({
     onChangePasswordConfirm: value =>
         dispatch({ type: UPDATE_FIELD_REGISTER, key: 'userPasswordConfirm', value }),
     onSubmit: (username, email, password, passwordConfirm) => {
-        dispatch({ type: LOADING_START })
-        agent.Reg.register(username, email, password, passwordConfirm).then(
-            function () {
-                dispatch({ type: LOADING_FINISHED });
+        dispatch({ type: UPDATE_REGISTRATION_ERRORS, payload: null});
+        dispatch({ type: LOADING_START });
+        agent.Reg.register(username, email, password, passwordConfirm, (res) => {
+            if ( res.success && !res.error ) {
                 dispatch({ type: NEW_USER_REGISTERED });
                 window.localStorage.removeItem('token');
                 dispatch({type: UNCHECK_AUTH_TOKEN});
+            } else {
+                dispatch({ type: UPDATE_REGISTRATION_ERRORS, payload: res.error})
             }
-        )
+            dispatch({ type: LOADING_FINISHED });
+        })
     },
     onChangeUser: value =>
         dispatch({type: UPDATE_FIELD_AUTH, key: 'userName', value}),
@@ -52,17 +53,31 @@ class Register extends Component {
         this.changePassword = ev => this.props.onChangePassword(ev.target.value);
         this.changePasswordConfirm = ev => this.props.onChangePasswordConfirm(ev.target.value);
         this.submitForm = ev => {
-            ev.preventDefault();
+            ev ? ev.preventDefault() : null;
             this.props.onSubmit( this.props.userName, this.props.userEmail, this.props.userPassword, this.props.userPasswordConfirm );
             this.props.onChangeUser(this.props.userName);
             this.props.onChangePass(this.props.userPassword);
             this.props.onRedirect()
         };
+        this.renderFieldErrorText = this.renderFieldErrorText.bind(this);
     }
     handleKeyPress = (event) => {
         if(event.key == 'Enter'){
             event.preventDefault();
             this.submitForm();
+        }
+    }
+    renderFieldErrorText = ( name, isCommonErrorPlace ) => {
+        if ( !this.props.errors ) {
+            return ''
+        } else if ( isCommonErrorPlace && this.props.errors.common ) {
+            return this.props.errors.common
+        } else if ( !isCommonErrorPlace && this.props.errors.common ) {
+            return ' '
+        } else if ( this.props.errors[name] ) {
+            return this.props.errors[name]
+        } else {
+            return ''
         }
     }
     render () {
@@ -79,16 +94,18 @@ class Register extends Component {
                     type="text"
                     fullWidth={true}
                     floatingLabelText="USERNAME"
+                    errorText={this.renderFieldErrorText('username')}
                     onKeyPress={this.handleKeyPress}
                 />
                 <TextField
                     onChange={this.changeEmail}
                     defaultValue={this.props.userEmail}
                     name="userEmail"
-                    type="text"
+                    type="email"
                     floatingLabelText="EMAIL"
                     fullWidth={true}
                     onKeyPress={this.handleKeyPress}
+                    errorText={this.renderFieldErrorText('email')}
                 />
                 <TextField
                     onChange={this.changePassword}
@@ -98,6 +115,7 @@ class Register extends Component {
                     floatingLabelText="PASSWORD"
                     fullWidth={true}
                     onKeyPress={this.handleKeyPress}
+                    errorText={this.renderFieldErrorText('password')}
                 />
                 <TextField
                     onChange={this.changePasswordConfirm}
@@ -107,6 +125,7 @@ class Register extends Component {
                     floatingLabelText="CONFIRM PASSWORD"
                     fullWidth={true}
                     onKeyPress={this.handleKeyPress}
+                    errorText={this.renderFieldErrorText('password', true)}
                 />
                 <br/>
                 <br/>
