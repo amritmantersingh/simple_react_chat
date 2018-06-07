@@ -10,6 +10,7 @@ Server side nodejs app used Express and Mongodb as database.
 1. Clone or download repository;
 2. Run ` npm i ` inside project root directory;
 3. Run ` npm i ` in /client;
+5. Copy .example.js files as .js in /config directory and fill your data;
 4. To start dev server run ` npm run all ` from project root;
 
 ## Contributing

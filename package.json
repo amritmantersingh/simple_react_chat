@@ -54,6 +54,7 @@
     "node-readme": "^0.1.9",
     "nodemon": "^1.14.9",
     "react-scripts": "^1.0.17",
+    "serve-handler": "^3.1.0",
     "socketio-jwt-auth": "0.0.6",
     "validator": "^10.2.0"
   },

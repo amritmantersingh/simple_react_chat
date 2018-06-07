@@ -1,0 +1,18 @@
+[
+    {
+        // Node Server
+        "uid": "server",
+        "append": true,
+        "watch": true,
+        "script": "server.js",
+        "sourceDir": "./"
+    },
+    {
+        // Client
+        "uid": "client",
+        "append": true,
+        "watch": true,
+        "script": "serve_client.js",
+        "sourceDir": "./"
+    }
+]
